@@ -11,6 +11,11 @@ public class Expression{
         parts = new ArrayList<>();
     }
 
+    public Expression(String exp){
+        parts = new ArrayList<>();
+        this.insertExpression(exp);
+    }
+
     public Expression(List<Part> parts){
         this.parts = (ArrayList<Part>) parts;
     }
@@ -42,17 +47,33 @@ public class Expression{
         }
     }
 
-    public boolean minimize(char root){
+    public static Layer decompose(Expression expression){
 
-        for(Part part : this.getParts()){
+        if(expression == null || expression.getParts().isEmpty()) return null;
+
+        // TODO:: Troubleshoot this NullPointerException
+        char root = expression.getRoot();
+
+        Expression left = new Expression();
+        Expression right = new Expression();
+
+        for(Part part : expression.getParts()){
             if(!part.contains(root)){
-                return false;
+                return null;
             }
+
+            if(Boolean.TRUE.equals(part.get(root).getTruthValue())){
+                right.getParts().add(part);
+            }
+            else{
+                left.getParts().add(part);
+            }
+
             part.remove(root);
 
         }
 
-        return true;
+        return new Layer(root, left, right);
     }
 
     public Character getRoot(){

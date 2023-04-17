@@ -1,12 +1,10 @@
 package sk.stuba.fiit.martin.szabo.bdd;
 
-import sk.stuba.fiit.martin.szabo.utils.Operator;
 
 import java.util.ArrayList;
 
 public class Part{
     private ArrayList<Node> nodes;
-    private Operator operator = Operator.MUL;
 
     public Part(){
         nodes = new ArrayList<>();
@@ -87,13 +85,5 @@ public class Part{
 
     public void setNodes(ArrayList<Node> nodes){
         this.nodes = nodes;
-    }
-
-    public Operator getOperator(){
-        return operator;
-    }
-
-    public void setOperator(Operator operator){
-        this.operator = operator;
     }
 }
