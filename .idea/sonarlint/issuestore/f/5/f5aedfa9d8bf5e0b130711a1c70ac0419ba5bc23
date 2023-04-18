@@ -1,13 +1,0 @@
-
-{
-java:S1319"eThe type of "nodes" should be an interface such as "List" rather than the implementation "ArrayList".(ªäˆ§
-…
-java:S1319/"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(Æößh
-‹
-java:S13199"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(ÂÂ÷ùÿÿÿÿ
-€
-java:S13199"eThe type of "array" should be an interface such as "List" rather than the implementation "ArrayList".(ÂÂ÷ùÿÿÿÿ
-†
-java:S1319R"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(ëƒ§¾
-{
-java:S1319V"eThe type of "nodes" should be an interface such as "List" rather than the implementation "ArrayList".(½¯‚
