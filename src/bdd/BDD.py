@@ -1,4 +1,4 @@
-from Node import Node
+from src.bdd.Node import Node
 
 
 # Prva redukcia pri vytvarani diagramu
