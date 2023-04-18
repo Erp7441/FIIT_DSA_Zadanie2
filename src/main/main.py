@@ -1,5 +1,4 @@
-from checker import check
-from BDD import BDD
+from src.bdd.BDD import BDD
 
 #print(check("abc+ABC", "abc", "111"))
 #print(check("aAbcde+Eb+bcD+cd+a", "abcde", "01011"))

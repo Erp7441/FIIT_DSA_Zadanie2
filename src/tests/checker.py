@@ -19,8 +19,7 @@ def check(expression, order, combination):
                             new_splits.append("1")
         functions.append(new_splits)
 
-
-    # Comment this nigger
+    # Comment this method
     is_true = True
     for function in functions:
         for letter in function:
