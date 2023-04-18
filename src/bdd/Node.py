@@ -52,3 +52,7 @@ class Node:
                 self.right = Node(expression, letter)
             elif side == '0':
                 self.left = Node(expression, letter)
+
+    def __str__(self):
+        #return self.order + ': ' + self.left.order + ', ' + self.right.order + ' (' + self.expression + ')'
+        return self.order + ' '

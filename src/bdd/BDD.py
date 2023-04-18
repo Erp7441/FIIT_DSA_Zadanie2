@@ -44,3 +44,11 @@ class BDD:
 
     def BDD_use(self):
         pass
+
+    def __str__(self):
+        string = str()
+        for layer in self.layers:
+            for node in layer:
+                string += node.__str__()
+            string += "\n"
+        return string

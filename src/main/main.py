@@ -11,7 +11,8 @@ from src.bdd.BDD import BDD
 
 #print(node.expression)
 
-bdd = BDD("aC+abc+Ab+Bc", "abc")
+#bdd = BDD("aC+abc+Ab+Bc", "abc")
+bdd = BDD("abc+ABC", "abc")
 bdd.BDD_create()
 
 print(bdd)
