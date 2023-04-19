@@ -75,8 +75,21 @@ class Node:
         self.join_child(left_expression, '0', letter)
         self.join_child(right_expression, '1', letter)
 
-        layer.append(self.left)
-        layer.append(self.right)
+        # Prva redukcia
+        found_duplicate_l = False
+        found_duplicate_r = False
+        for child in layer:
+            if child == self.left:
+                self.left = child
+                found_duplicate_l = True
+            elif child == self.right:
+                self.right = child
+                found_duplicate_r = True
+
+        if not found_duplicate_l:
+            layer.append(self.left)
+        if not found_duplicate_r:
+            layer.append(self.right)
 
     # Check ci existuje nejaka noda ktorej expression == tej ktoru chcem vytvorit. Ak ano tak napojim.
     def join_child(self, expression: str, side: str, letter: str):
@@ -99,10 +112,24 @@ class Node:
                 self.left = Node(expression, self.order.replace(letter, ''))
 
     def __str__(self):
+        string = str()
         if self.value is not None and len(self.value) != 0:
-            return self.value + ' '
+            string += self.value + ' '
         else:
             return ""
+        if self.left is not None and self.left.value is not None and len(self.left.value) != 0:
+            string += self.left.value + ', '
+        else:
+            string += 'x, '
+        if self.right is not None and self.right.value is not None and len(self.right.value) != 0:
+            string += self.right.value + '\n'
+        else:
+            string += 'x\n'
+        return string
+
+    def __eq__(self, other):
+        if other is None: return False
+        return self.value == other.value and self.expression == other.expression
 
     def check_create_childs(self):
         from src.bdd.BDD import BDD
