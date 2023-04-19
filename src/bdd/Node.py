@@ -114,7 +114,7 @@ class Node:
     def __str__(self):
         string = str()
         if self.value is not None and len(self.value) != 0:
-            string += self.value + ' '
+            string += self.value + ': '
         else:
             return ""
         if self.left is not None and self.left.value is not None and len(self.left.value) != 0:

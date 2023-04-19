@@ -44,15 +44,19 @@ class BDD:
                     if node.left is not None and node.right is not None and node.left == node.right:
                         # Second reduction
                         self.replace_node(node, self.layers[-2], self.layers[-3], self.layers[-1])
+            if self.layers[-1] is not None and len(self.layers[-1]) == 0:
+                self.layers.remove(self.layers[-1])
+
+
 
 
     # BDD_create_with_best_order
-    def create_with_best_order(self):
+    def create_with_best_order(self, expression: str):
         # TODO:: Implement
         pass
 
     # BDD_use
-    def use(self):
+    def use(self, combination: str):
         # TODO:: Implement
         pass
 
@@ -66,11 +70,15 @@ class BDD:
 
     def __str__(self):
         string = str()
+        if(self.layers is not None and len(self.layers) != 0):
+            print("--------")
         for layer in self.layers:
             for node in layer:
                 string += node.__str__()
             if layer is not None and len(layer) != 0:
-                string += "---------\n"
+                string += "--------"
+                if layer is not self.layers[-1]:
+                    string += '\n'
         return string
 
     def replace_node(self, node, nodes_layer, parents_layer, childs_layer):

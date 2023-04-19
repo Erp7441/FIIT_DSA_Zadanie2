@@ -25,7 +25,7 @@ from src.bdd.BDD import BDD
 def main():
     bdd = BDD("aC+abc+Ab+Bc", "abc")
     bdd.create()
-    print(bdd)
+    print(bdd, end="")
 
 def test():
     from src.bdd.Node import definitive_value
