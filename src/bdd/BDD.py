@@ -24,31 +24,48 @@ from src.bdd.Node import Node
 # Priklad mas jedno pismeno napriklad X. Len ho dosadis
 
 class BDD:
-    node_one = Node(None, "1")
-    node_zero = Node(None, "0")
+    node_one = Node('1', '1')
+    node_zero = Node('0', '0')
 
     def __init__(self, order, expression):
         self.layers = []
         self.order = order
         self.layers.append([Node(order, expression)])
 
-    def BDD_create(self):
+    # BDD_create
+    def create(self):
         for letter in self.order:
+            if letter == '+':
+                continue
             self.layers.append([])
             for node in self.layers[-2]:
-                node.create_childs(letter, self.layers[-1])
-                # Tu budem robit druhu redukciu :) Useless node
+                if node.order is not None and len(node.order) != 0:
+                    node.create_childs(node.order[0], self.layers[-1])
+                    # Tu budem robit druhu redukciu :) Useless node
 
-    def BDD_create_with_best_order(self):
+    # BDD_create_with_best_order
+    def create_with_best_order(self):
+        # TODO:: Implement
         pass
 
-    def BDD_use(self):
+    # BDD_use
+    def use(self):
+        # TODO:: Implement
         pass
+
+    @staticmethod
+    def get_node_one():
+        return BDD.node_one
+
+    @staticmethod
+    def get_node_zero():
+        return BDD.node_zero
 
     def __str__(self):
         string = str()
         for layer in self.layers:
             for node in layer:
                 string += node.__str__()
-            string += "\n"
+            if layer is not None and len(layer) != 0:
+                string += "\n"
         return string
