@@ -1,21 +1,34 @@
-def remove_occurrences(array: list, letter):
-    new_list = []
-    for element in array:
-        if letter not in element:
-            new_list.append(element)
-    return '+'.join(new_list)
+def shannon_insert_value(expression, value, insertion_value):
 
-def replace_occurence(array: list, letter, replacement):
-    new_list = []
-    for element in array:
-        if letter not in element:
-            new_list.append(replacement)
-    return '+'.join(new_list)
+    # 1. Ak je replacement '0' dosadime na kazdy letter 0
+    # 1.1 Ak je vo vyraze male pismeno dosadime 0 ak je velke tak 1
+    # 2. Ak je replacement '1' dosadime na kazdy letter 1
+    # 2.1 Ak je vo vyraze male pismeno tak 1 ak je velke tak 0
+    # VYSLEDOK = list casti ktore maju to pismeno nahradeny korespondujucimi hodnotami
 
-def replace_expression_nodes(expression, letter):
-    new_expression = expression.replace(letter, '')
-    new_list = new_expression.split('+')
-    '+'.join(new_list)
+    new_expression = []
+    for letter in expression:
+        if letter == value:
+            if insertion_value == '1':
+                if letter.islower():
+                    new_expression.append('1')
+                else:
+                    new_expression.append('0')
+            elif insertion_value == '0':
+                if letter.islower():
+                    new_expression.append('0')
+                else:
+                    new_expression.append('1')
+        else:
+            new_expression.append(letter)
+    return ''.join(new_expression).strip('+').split('+')
+
+def shannon_extract_one(part):
+    new_expression = str()
+    for letter in part:
+        if letter != '1':
+            new_expression += letter
+    return new_expression
 
 
 def check_expression_consists_of_same_letter(expression):
@@ -51,20 +64,28 @@ def definitive_value(expression: str, control: str, replacement: str):
     for node in expression:
         if len(node) == 1 and node.lower() == control.lower():
             values.append(evaluate_letter(node, replacement))
-        elif len(node) > 1 and node.lower() == control.lower() and check_expression_consists_of_same_letter(node):
+        elif len(node) > 1 and node[0].lower() == control.lower() and check_expression_consists_of_same_letter(node):
             values.append(evaluate_letter(node[0], replacement))
+        elif len(node) == 1:
+            values.append(node)
 
     if len(values) == 0:
         return None
 
     if '1' in values:
         return '1'
+
+    for value in values:
+        if value != '0':
+            return None
+
     return '0'
 
 
 def check_for_terminator(node):
     from src.bdd.BDD import BDD
     return node == BDD.get_node_one() or node == BDD.get_node_zero()
+
 
 
 class Node:
@@ -78,31 +99,44 @@ class Node:
             self.value = order[0].upper()
 
     # Sano
-    def expression_handler(self, letter: str, replacement: str):
+    def shannons_decomposition(self, letter: str, replacement: str):
 
-        if self.expression is None:
+        if self.expression is None or letter is None or replacement is None:
             return None
 
-        # 1. Ak je replacement '0' dosadime na kazdy letter 0
-            # 1.1 Ak je vo vyraze male pismeno dosadime 0 ak je velke tak 1
-        # 2. Ak je replacement '1' dosadime na kazdy letter 1
-            # 2.1 Ak je vo vyraze male pismeno tak 1 ak je velke tak 0
-        # VYSLEDOK = list casti ktore maju to pismeno nahradeny korespondujucimi hodnotami
-        # 3. Vytvorime si novy list (vyrazu)
-        # 4. Prechadzame kazdu jednu cast listu casti
-            # 4.1 Ak v casti listu bude '0' ignorujeme tu cast
-            # 4.2 Ak v casti listu bude '1' vybereme z danej casti listu '1' a pridame ju do noveho listu
-            # 4.3 Ak v casti listu nebude '0' ani '1' pridavame ju do noveho listu
+        if self.expression == 'b+c+bc' and replacement == '0':
+            print(end='')
 
-        return new_expression
+        definitive = definitive_value(self.expression, letter, replacement)
+        if definitive == '1' or definitive == '0':
+            return definitive
+
+
+        parts = shannon_insert_value(expression=self.expression, value=letter, insertion_value=replacement)
+        new_expression = [] # 3. Vytvorime si novy list (vyrazu)
+
+        # 4. Prechadzame kazdu jednu cast listu casti
+        for part in parts:
+            # 4.2 Ak v casti listu bude '1' vybereme z danej casti listu '1' a pridame ju do noveho listu
+            if '1' in part:
+                new_expression.append(shannon_extract_one(part))
+            # 4.1 Ak v casti listu bude '0' ignorujeme tu cast
+            # 4.3 Ak v casti listu nebude '0' ani '1' pridavame ju do noveho listu
+            elif '0' not in part:
+                new_expression.append(part)
+
+        if len(new_expression) == 0 and (definitive != '1' or definitive != '0'):
+            return evaluate_letter(letter, replacement)
+
+        return '+'.join(new_expression).strip('+')
 
     def create_childs(self, letter: str, layer):
 
         if not self.check_create_childs():
             return
 
-        left_expression = self.expression_handler(letter, '0')
-        right_expression = self.expression_handler(letter, '1')
+        left_expression = self.shannons_decomposition(letter, '0')
+        right_expression = self.shannons_decomposition(letter, '1')
 
         self.join_child(left_expression, '0', letter)
         self.join_child(right_expression, '1', letter)

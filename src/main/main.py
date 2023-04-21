@@ -33,14 +33,13 @@ def main():
 
 def test():
     from src.bdd.Node import definitive_value
-    print(definitive_value("b+Bc", 'b', '1'))
-    print(definitive_value("b+Cc", 'b', '1'))
-    print(definitive_value("aC+abc+Ab+aBc+a", 'a', '1'))
-    print(definitive_value("aC+abc+Ab+aBc+a", 'a', '0'))
-    print(definitive_value("aC+abc+Ab+aBc+b", 'a', '1'))
-    print(definitive_value("aC+abc+Ab+aBc+b", 'a', '0'))
-    print(definitive_value("ac+ggh+abc+Ab+aBc+ba+fdjhsjkdh+fhfeh+aa+b", 'a', '1'))
+    # print(definitive_value("b+Bc", 'b', '1'))
+    # print(definitive_value("b+Cc", 'b', '1'))
+    # print(definitive_value("aC+abc+Ab+aBc+a", 'a', '1'))
+    # print(definitive_value("aC+abc+Ab+aBc+a", 'a', '0'))
+    # print(definitive_value("aC+abc+Ab+aBc+b", 'a', '1'))
+    # print(definitive_value("aC+abc+Ab+aBc+b", 'a', '0'))
+    # print(definitive_value("ac+ggh+abc+Ab+aBc+ba+fdjhsjkdh+fhfeh+aa+b", 'a', '1'))
 
-
-# test()
+#test()
 main()
