@@ -23,6 +23,7 @@ def shannon_insert_value(expression, value, insertion_value):
             new_expression.append(letter)
     return ''.join(new_expression).strip('+').split('+')
 
+
 def shannon_extract_one(part):
     new_expression = str()
     for letter in part:
@@ -57,21 +58,6 @@ def evaluate_letter(letter: str, replacement: str):
         else:
             return '1'
 
-def check_true_times_false_case(expression):
-    alphabet = []
-    for letter in expression:
-        if letter not in alphabet:
-            alphabet.append(letter)
-
-    for letter in alphabet:
-        if letter.lower() in alphabet and letter.upper() in alphabet:
-            return True
-
-    return False
-
-
-
-
 def definitive_value(expression: str, control: str, replacement: str):
     expression = expression.split('+')
     values = []
@@ -88,6 +74,7 @@ def definitive_value(expression: str, control: str, replacement: str):
         # Example 'Bc' or 'Bb' #
         elif len(node) > 1:
             # 'Bb' case #
+            from BDD import check_true_times_false_case
             if check_true_times_false_case(node):
                 values.append('0')
                 continue
@@ -114,7 +101,6 @@ def definitive_value(expression: str, control: str, replacement: str):
 def check_for_terminator(node):
     from src.bdd.BDD import BDD
     return node == BDD.get_node_one() or node == BDD.get_node_zero()
-
 
 
 class Node:
