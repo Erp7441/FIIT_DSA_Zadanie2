@@ -107,9 +107,9 @@ class BDD:
                 if node.order is not None and len(node.order) != 0:
 
                     node.create_childs(node.order[0], self.layers[-1])
-                    # if check_second_reduction(node):
-                    #     # Second reduction
-                    #     self.replace_node(node, self.layers[-2], self.layers[-3], self.layers[-1])
+                    if check_second_reduction(node):
+                        # Second reduction
+                        self.replace_node(node, self.layers[-2], self.layers[-3], self.layers[-1])
 
             if self.layers[-1] is not None and len(self.layers[-1]) == 0:
                 self.layers.remove(self.layers[-1])
