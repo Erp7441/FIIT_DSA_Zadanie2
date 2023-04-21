@@ -23,6 +23,12 @@ from src.bdd.Node import Node
 # Pokial je A = 0 tak mas 0.
 # Priklad mas jedno pismeno napriklad X. Len ho dosadis
 
+def check_second_reduction(node):
+    return node.left is not None and node.right is not None \
+            and (node.left != BDD.get_node_one() or node.left != BDD.get_node_zero()) \
+            and (node.right != BDD.get_node_one() or node.right != BDD.get_node_zero()) \
+            and node.left == node.right
+
 class BDD:
     node_one = Node('1', '1')
     node_zero = Node('0', '0')
@@ -31,19 +37,25 @@ class BDD:
         self.layers = []
         self.order = order
         self.layers.append([Node(order, expression)])
-
+        # TODO:: Remove duplicates from root node's expression example (aaa) == (a) or (AAA) == (A)
+        # TODO:: Remove (aA) small and upper case of same letter. Because it is always 0
+        # TODO:: Check if root expression is empty. If so connect it to node 0
     # BDD_create
     def create(self):
         for letter in self.order:
             if letter == '+':
                 continue
+
             self.layers.append([])
             for node in self.layers[-2]:
+
                 if node.order is not None and len(node.order) != 0:
+
                     node.create_childs(node.order[0], self.layers[-1])
-                    if node.left is not None and node.right is not None and node.left == node.right:
-                        # Second reduction
-                        self.replace_node(node, self.layers[-2], self.layers[-3], self.layers[-1])
+                    # if check_second_reduction(node):
+                    #     # Second reduction
+                    #     self.replace_node(node, self.layers[-2], self.layers[-3], self.layers[-1])
+
             if self.layers[-1] is not None and len(self.layers[-1]) == 0:
                 self.layers.remove(self.layers[-1])
 
@@ -101,5 +113,3 @@ class BDD:
 
         for child in children_to_remove:
             childs_layer.remove(child)
-
-        nodes_layer.append(BDD.get_node_one())

@@ -22,10 +22,14 @@ from src.bdd.BDD import BDD
 # Pokial je A = 0 tak mas 0.
 # Priklad mas jedno pismeno napriklad X. Len ho dosadis
 
+
 def main():
-    bdd = BDD("aC+abc+Ab+Bc", "abc")
+    #bdd = BDD("aC+abc+Ab+Bc", "abc")
+
+    bdd = BDD("ab+ac+bc", "abc")
     bdd.create()
     print(bdd, end="")
+
 
 def test():
     from src.bdd.Node import definitive_value
@@ -35,6 +39,7 @@ def test():
     print(definitive_value("aC+abc+Ab+aBc+a", 'a', '0'))
     print(definitive_value("aC+abc+Ab+aBc+b", 'a', '1'))
     print(definitive_value("aC+abc+Ab+aBc+b", 'a', '0'))
+    print(definitive_value("ac+ggh+abc+Ab+aBc+ba+fdjhsjkdh+fhfeh+aa+b", 'a', '1'))
 
 
 # test()
