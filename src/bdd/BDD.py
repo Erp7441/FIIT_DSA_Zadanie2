@@ -32,7 +32,7 @@ def check_second_reduction(node):
 
 def remove_duplicate_letters_from_node(node):
 
-    if(node is None or len(node) < 2):
+    if node is None or len(node) < 2:
         return node
 
     new_expression = []
@@ -43,6 +43,18 @@ def remove_duplicate_letters_from_node(node):
         new_expression.append(letter)
         last_letter = letter
     return ''.join(new_expression)
+
+
+def check_true_times_false_case(expression):
+    alphabet = []
+    for letter in expression:
+        if letter not in alphabet:
+            alphabet.append(letter)
+
+    for letter in alphabet:
+        if letter.lower() in alphabet and letter.upper() in alphabet:
+            return True
+    return False
 
 
 def remove_duplicate_letters_from_expression(expression):
@@ -62,34 +74,27 @@ def remove_zero_nodes_from_expression(expression):
     return '+'.join(new_expression).strip('+')
 
 
-def check_true_times_false_case(expression):
-    alphabet = []
-    for letter in expression:
-        if letter not in alphabet:
-            alphabet.append(letter)
-
-    for letter in alphabet:
-        if letter.lower() in alphabet and letter.upper() in alphabet:
-            return True
-    return False
+def minimize_expression(expression):
+    return remove_zero_nodes_from_expression(remove_duplicate_letters_from_expression(expression))
 
 
 class BDD:
     node_one = Node('1', '1')
     node_zero = Node('0', '0')
 
-    def __init__(self, order, expression):
+    def __init__(self, expression: str, order: str):
         self.layers = []
         self.order = order
 
         if expression is None or len(expression) == 0:
-            self.layers.append(BDD.get_node_zero())
+            self.layers.append([BDD.get_node_zero()])
         else:
-            self.layers.append([Node(order, expression)])
+            node = Node(minimize_expression(expression), order)
+            if len(node.expression) == 0:
+                self.layers.append([BDD.get_node_zero()])
+            else:
+                self.layers.append([node])
 
-        # TODO:: Remove duplicates from root node's expression example (aaa) == (a) or (AAA) == (A) [Tick?]
-        # TODO:: Remove (aA) small and upper case of same letter. Because it is always 0 [Tick?]
-        # TODO:: Check if root expression is empty. If so connect it to node 0 [Tick?]
     # BDD_create
     def create(self):
         for letter in self.order:
@@ -108,9 +113,6 @@ class BDD:
 
             if self.layers[-1] is not None and len(self.layers[-1]) == 0:
                 self.layers.remove(self.layers[-1])
-
-
-
 
     # BDD_create_with_best_order
     def create_with_best_order(self, expression: str):
@@ -132,7 +134,7 @@ class BDD:
 
     def __str__(self):
         string = str()
-        if(self.layers is not None and len(self.layers) != 0):
+        if self.layers is not None and len(self.layers) != 0:
             print("--------")
         for layer in self.layers:
             for node in layer:

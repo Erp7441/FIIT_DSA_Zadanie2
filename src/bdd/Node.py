@@ -74,7 +74,7 @@ def definitive_value(expression: str, control: str, replacement: str):
         # Example 'Bc' or 'Bb' #
         elif len(node) > 1:
             # 'Bb' case #
-            from BDD import check_true_times_false_case
+            from src.bdd.BDD import check_true_times_false_case
             if check_true_times_false_case(node):
                 values.append('0')
                 continue
