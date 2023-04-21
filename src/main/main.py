@@ -24,9 +24,8 @@ from src.bdd.BDD import BDD
 
 
 def main():
-    #bdd = BDD("aC+abc+Ab+Bc", "abc")
-
-    bdd = BDD("ab+ac+bc", "abc")
+    bdd = BDD("aC+abc+Ab+Bc", "abc")
+    #bdd = BDD("ab+ac+bc", "abc")
     bdd.create()
     print(bdd, end="")
 

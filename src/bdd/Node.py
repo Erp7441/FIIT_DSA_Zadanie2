@@ -8,7 +8,7 @@ def shannon_insert_value(expression, value, insertion_value):
 
     new_expression = []
     for letter in expression:
-        if letter == value:
+        if letter.lower() == value.lower():
             if insertion_value == '1':
                 if letter.islower():
                     new_expression.append('1')
@@ -57,17 +57,46 @@ def evaluate_letter(letter: str, replacement: str):
         else:
             return '1'
 
+def check_true_times_false_case(expression):
+    alphabet = []
+    for letter in expression:
+        if letter not in alphabet:
+            alphabet.append(letter)
+
+    for letter in alphabet:
+        if letter.lower() in alphabet and letter.upper() in alphabet:
+            return True
+
+    return False
+
+
+
 
 def definitive_value(expression: str, control: str, replacement: str):
     expression = expression.split('+')
     values = []
     for node in expression:
+        # Example 'b' ; Control = 'b' #
         if len(node) == 1 and node.lower() == control.lower():
             values.append(evaluate_letter(node, replacement))
+        # Example 'bb' ; Control = 'b' #
         elif len(node) > 1 and node[0].lower() == control.lower() and check_expression_consists_of_same_letter(node):
             values.append(evaluate_letter(node[0], replacement))
+        # Example 'b' #
         elif len(node) == 1:
             values.append(node)
+        # Example 'Bc' or 'Bb' #
+        elif len(node) > 1:
+            # 'Bb' case #
+            if check_true_times_false_case(node):
+                values.append('0')
+                continue
+            # 'Bc' case #
+            new_node = str()
+            for letter in node:
+                if evaluate_letter(letter, replacement) != '1':
+                    new_node += letter
+            values.append(new_node)
 
     if len(values) == 0:
         return None
@@ -104,13 +133,12 @@ class Node:
         if self.expression is None or letter is None or replacement is None:
             return None
 
-        if self.expression == 'b+c+bc' and replacement == '0':
-            print(end='')
+        if self.expression == "b+Bc":
+            print(end="")
 
         definitive = definitive_value(self.expression, letter, replacement)
         if definitive == '1' or definitive == '0':
             return definitive
-
 
         parts = shannon_insert_value(expression=self.expression, value=letter, insertion_value=replacement)
         new_expression = [] # 3. Vytvorime si novy list (vyrazu)
