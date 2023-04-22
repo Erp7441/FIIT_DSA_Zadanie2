@@ -28,14 +28,13 @@ from src.bdd.Node import Node
 def check_second_reduction(node):
     # If the left and right child of a node are the same, but are not '0' or '1' then return True
     return node.left is not None and node.right is not None \
-            and (node.left != BDD.get_node_one() or node.left != BDD.get_node_zero()) \
-            and (node.right != BDD.get_node_one() or node.right != BDD.get_node_zero()) \
-            and node.left == node.right
+        and (node.left != BDD.get_node_one() or node.left != BDD.get_node_zero()) \
+        and (node.right != BDD.get_node_one() or node.right != BDD.get_node_zero()) \
+        and node.left == node.right
 
 
 # Remove all duplicate letters from a expression node
 def remove_duplicate_letters_from_node(node):
-
     # Check if we can remove duplicates
     if node is None or len(node) < 2:
         return node
@@ -106,7 +105,6 @@ def check_true_times_false_case(expression):
 
 # Removes all nodes from the expression that has a positive and negative letter multiplying
 def remove_zero_nodes_from_expression(expression):
-
     # We split the expression into '+' separated nodes
     expression = expression.split('+')
 
@@ -132,7 +130,6 @@ def minimize_expression(expression):
 
 # Performs second reduction
 def replace_node(node, nodes_layer, parents_layer, children_layer):
-
     # Check prerequisites for second reduction
     if node is None or nodes_layer is None or parents_layer is None or children_layer is None:
         return
@@ -176,9 +173,18 @@ class BDD:
     node_one = Node('1', '1')
     node_zero = Node('0', '0')
 
-    def __init__(self, expression: str, order: str):
+    def __init__(self):
+        self.layers = None
+        self.order = None
+        self.expression = None
+
+    def initialize(self, expression: str, order: str = None):
+        # Initialize layers list
         self.layers = []
-        self.order = order
+
+        # If order is not None we can set it as order of root node in this BDD
+        if order is not None:
+            self.order = order
 
         # If we have no expression connect  root to '0'
         if expression is None or len(expression) == 0:
@@ -196,7 +202,10 @@ class BDD:
                 self.layers.append([node])
 
     # BDD_create
-    def create(self):
+    def create(self, expression: str, order: str):
+
+        # Initializes expression which we will be creating BDD from
+        self.initialize(expression, order)
 
         # For each letter in order
         for _ in self.order:
@@ -217,15 +226,91 @@ class BDD:
             if self.layers[-1] is not None and len(self.layers[-1]) == 0:
                 self.layers.remove(self.layers[-1])
 
+        return self
+
     # BDD_create_with_best_order
     def create_with_best_order(self, expression: str):
-        # TODO:: Implement
-        pass
+
+        # Holds all letters present in expression
+        alphabet = []
+
+        # For each letter in the expression
+        for letter in expression:
+            if letter == '+':
+                continue
+            # If the letter is not present in the alphabet
+            if letter.lower() not in alphabet:
+                # We add it (once due to the condition above)
+                alphabet.append(letter.lower())
+
+        # Join together list of alphabet characters in expression
+        order = "".join(alphabet)
+        best_order = ""
+
+        # Holds smallest number of nodes
+        smallest_count = float('inf')
+
+        # For each letter of the expression's alphabet
+        for _ in range(len(alphabet)):
+            # Create a new BDD
+            self.create(expression, order)
+            # Track current count of nodes
+            current_count = self.get_node_count()
+            # If the current count is smaller than the smallest tracked count
+            if current_count < smallest_count:
+                # Set current count as the smallest tracked count
+                smallest_count = current_count
+                # Save current order as the best one possible
+                best_order = order
+
+            # Shift current order
+            order = order[-1] + order[:-1]
+
+        # Return BDD with the best order
+        return self.create(expression, best_order)
+
+    # Gets count of nodes in layers
+    def get_node_count(self):
+        # Holds count of nodes in layers
+        count = 0
+        # For each layer
+        for layer in self.layers:
+            # Add its length to the counter
+            count += len(layer)
+        # Return the count
+        return count
 
     # BDD_use
     def use(self, combination: str):
-        # TODO:: Implement
-        pass
+        # Holds current position in BDD
+        current_node = self.layers[0][0]
+
+        # Holds the path of nodes we've been through
+        path = [current_node]
+
+        # For each value in combination we received
+        for value in combination:
+            # If we got a '0' value we move left
+            if value == '0':
+                # If the current node's left child value is None we cannot move anymore.
+                # So we return the path we've gone through
+                if current_node.left is None:
+                    return path
+                # We set current_node to it's left child
+                current_node = current_node.left
+            # Else if we got a '1' value we move left
+            elif value == '1':
+                # If the current node's right child value is None we cannot move anymore.
+                # So we return the path we've gone through
+                if current_node.right is None:
+                    return path
+                # We set current_node to it's right child
+                current_node = current_node.right
+            # And we append current node to the path list
+            path.append(current_node)
+
+        # If we arrived at the end of the combination we return the path
+        return path
 
     @staticmethod
     def get_node_one():
