@@ -137,7 +137,7 @@ def replace_node(node, nodes_layer, parents_layer, children_layer):
     if node is None or nodes_layer is None or parents_layer is None or children_layer is None:
         return
 
-    # Firstly we remove the node from it's layer
+    # Firstly we remove the node from its layer
     nodes_layer.remove(node)
 
     # Then we disconnect the node from its parent
@@ -207,7 +207,7 @@ class BDD:
             for node in self.layers[-2]:
                 # Create children of given order
                 if node.order is not None and len(node.order) != 0:
-                    node.create_childs(node.order[0], self.layers[-1])
+                    node.create_children(node.order[0], self.layers[-1])
 
                     # Second (duplicates) reduction
                     if check_second_reduction(node):
@@ -237,7 +237,7 @@ class BDD:
 
     def __str__(self):
 
-        # String representation of the binary decision diagram
+        # Holds string representation of the binary decision diagram
         string = str()
 
         # Creating separator for first layer
