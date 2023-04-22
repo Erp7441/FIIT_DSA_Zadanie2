@@ -36,6 +36,7 @@ def test():
     from src.bdd.Node import definitive_value
     from src.bdd.BDD import remove_duplicate_letters_from_expression
     from src.bdd.BDD import remove_zero_nodes_from_expression
+    from src.tests.checker import check
     # print(definitive_value("b+Bc", 'b', '1'))
     # print(definitive_value("b+Cc", 'b', '1'))
     # print(definitive_value("aC+abc+Ab+aBc+a", 'a', '1'))
@@ -43,8 +44,9 @@ def test():
     # print(definitive_value("aC+abc+Ab+aBc+b", 'a', '1'))
     # print(definitive_value("aC+abc+Ab+aBc+b", 'a', '0'))
     # print(definitive_value("ac+ggh+abc+Ab+aBc+ba+fdjhsjkdh+fhfeh+aa+b", 'a', '1'))
+    #print(remove_zero_nodes_from_expression("aA+a+Bb+cC+Cc+ccCdDsSc"))
+    print(check("b+Bc", 'b', '00'))
 
-    print(remove_zero_nodes_from_expression("aA+a+Bb+cC+Cc+ccCdDsSc"))
 
 #test()
 main()
