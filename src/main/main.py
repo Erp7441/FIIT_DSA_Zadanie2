@@ -34,15 +34,13 @@ def main():
 
 
 def test():
-    from src.tests.generator import generate_bdd_diagrams
-    diagrams = generate_bdd_diagrams(100, 40, 200)
+    from src.tests.checker import test_bdd
 
-    test_diagram = []
-    for diagram in diagrams:
-        if len(diagram.layers) > 1:
-            test_diagram.append(diagram)
+    expression = "ByzxjyyURYz+ynYSrhUnNyn+BxvbxRhuSUj+rhnjbVnsXHY+xYnhuZZZbNx+zZxbSyvnvJb+uyRVszJurvz+RhJzbxuYrNV+vbUybsHzVJj+jnjBunxJXUz+sRNvHUNRbSs+xxsRXvUzSxR+rSUzBnRHNjS+yHXnBSxzUhs+zHjRbrzyZvu"
+    order = "byzxjurnshv"
 
-    pass
+    print("BDD is: " + test_bdd(expression, order))
+
 
 
 test()

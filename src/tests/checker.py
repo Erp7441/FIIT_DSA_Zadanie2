@@ -1,5 +1,6 @@
 from src.bdd.BDD import BDD
 
+
 # Evaluates given function that had truth values of each letter inserted into it
 def evaluate_functions(functions: list):
 
@@ -78,10 +79,47 @@ def check(expression, order, combination):
     # We evaluate the boolean value of each function in function list
     return evaluate_functions(functions)
 
-# TODO:: Write test_bdd_solution
-def check_bdd(bdd):
-    pass
+
+def get_combinations(characters: str, amount: int):
+    from itertools import product
+    from src.utils.converter import tuple_to_string
+    combinations = []
+    for combination in list(product(characters, repeat=amount)):
+        combinations.append(tuple_to_string(combination))
+    return combinations
 
 
 def check_bdd_solution(bdd: BDD, expression:str , order: str):
-    return check(expression, order, None) == check_bdd(bdd)
+    from src.utils.colors import boolean_c
+
+    # Iter tools product on 01010010101010
+    # 1. Generate all possible combinations of 0's and 1's
+    # 2. Check the value of "use()" method in BDD
+    # 3. Check the value of expression using "check()" function
+    # 4. If all possible combinations are equal then we have correct BDD solution
+
+    combinations = get_combinations('01', len(order))
+
+    for combination in combinations:
+        last_node_of_combination = bdd.use(combination)
+        boolean_value = None
+
+        if last_node_of_combination.value == '1':
+            boolean_value = True
+        elif last_node_of_combination.value == '0':
+            boolean_value = False
+        else:
+            return None
+
+        if boolean_value != check(expression, order, combination):
+            return boolean_c(False)
+        else:
+            from src.utils.colors import boolean_values_c
+            print(boolean_values_c(combination) + ": " + boolean_c(boolean_value))
+
+    return boolean_c(True)
+
+
+def test_bdd(expression: str, order: str):
+    bdd = BDD().create(expression, order)
+    return check_bdd_solution(bdd, expression, order)

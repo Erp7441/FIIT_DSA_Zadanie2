@@ -297,32 +297,24 @@ class BDD:
         # Holds current position in BDD
         current_node = self.layers[0][0]
 
-        # Holds the path of nodes we've been through
-        path = [current_node]
-
         # For each value in combination we received
-        for value in combination:
+        for index, value in enumerate(combination):
+
+            # If order's letter doesn't match the current node label then we skip it
+            if current_node.value.upper() != self.order[index].upper():
+                continue
+
             # If we got a '0' value we move left
             if value == '0':
-                # If the current node's left child value is None we cannot move anymore.
-                # So we return the path we've gone through
-                if current_node.left is None:
-                    return path
                 # We set current_node to it's left child
                 current_node = current_node.left
             # Else if we got a '1' value we move left
             elif value == '1':
-                # If the current node's right child value is None we cannot move anymore.
-                # So we return the path we've gone through
-                if current_node.right is None:
-                    return path
                 # We set current_node to it's right child
                 current_node = current_node.right
-            # And we append current node to the path list
-            path.append(current_node)
 
-        # If we arrived at the end of the combination we return the path
-        return path
+        # If we arrived at the end of the combination we return the last node of the combination
+        return current_node
 
     @staticmethod
     def get_node_one():
