@@ -179,7 +179,9 @@ def replace_root(root):
 
 class BDD:
     node_one = Node('1', '1')
+    node_one.value = '1'
     node_zero = Node('0', '0')
+    node_zero.value = '0'
 
     def __init__(self):
         self.layers = None
@@ -299,6 +301,11 @@ class BDD:
 
         # For each value in combination we received
         for index, value in enumerate(combination):
+
+            # U je problem, Je mozne ze to je cisto left pohyb a zrazu left pohyb
+
+            if current_node is BDD.get_node_zero() or current_node is BDD.get_node_one():
+                return current_node
 
             # If order's letter doesn't match the current node label then we skip it
             if current_node.value.upper() != self.order[index].upper():

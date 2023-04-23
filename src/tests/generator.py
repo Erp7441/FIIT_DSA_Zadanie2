@@ -30,7 +30,7 @@ def generate_dnf_expressions(expression_count, variable_count, node_count):
     return expressions
 
 
-def generate_bdd_diagrams(diagram_count=100, variable_count=40, node_count=200):
+def generate_bdd_diagrams(diagram_count: int = 100, variable_count: int = 13, node_count: int = 200):
     expressions = generate_dnf_expressions(diagram_count, variable_count, node_count)
     diagrams = []
     for i in range(diagram_count):

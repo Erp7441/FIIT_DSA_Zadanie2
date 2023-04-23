@@ -218,9 +218,9 @@ class Node:
                 new_expression.append(part)
 
         # If the new expression is empty and definitive values are not '1' or '0'
-        # We return the evaluation of the replacement letter
+        # We return '0'
         if len(new_expression) == 0 and (definitive != '1' or definitive != '0'):
-            return evaluate_letter(letter, replacement)
+            return '0'
 
         # Join the separated expression with '+' and strip any leading or trailing '+' signs
         return '+'.join(new_expression).strip('+')
@@ -236,11 +236,13 @@ class Node:
         left_expression = self.shannon_decomposition(letter, '0')
         right_expression = self.shannon_decomposition(letter, '1')
 
+        # TODO:: Remove this debug if
+        if right_expression is not None and right_expression == '0':
+            pass
+
         # Connect the newly created children to their appropriate sides
         self.join_child(left_expression, '0', letter)
         self.join_child(right_expression, '1', letter)
-
-        # TODO:: Handle duplicate children
 
         # We look for duplicates inside the layers
         found_duplicate_l = False

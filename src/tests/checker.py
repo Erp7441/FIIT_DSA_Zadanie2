@@ -3,7 +3,6 @@ from src.bdd.BDD import BDD
 
 # Evaluates given function that had truth values of each letter inserted into it
 def evaluate_functions(functions: list):
-
     # Check if we have a list of functions
     if list is None or len(functions) == 0:
         return False
@@ -89,7 +88,7 @@ def get_combinations(characters: str, amount: int):
     return combinations
 
 
-def check_bdd_solution(bdd: BDD, expression:str , order: str):
+def check_bdd_solution(bdd: BDD, expression: str, order: str, verbose: bool = True):
     from src.utils.colors import boolean_c
 
     # Iter tools product on 01010010101010
@@ -99,10 +98,14 @@ def check_bdd_solution(bdd: BDD, expression:str , order: str):
     # 4. If all possible combinations are equal then we have correct BDD solution
 
     combinations = get_combinations('01', len(order))
+    printed_header = False
 
     for combination in combinations:
         last_node_of_combination = bdd.use(combination)
         boolean_value = None
+
+        if last_node_of_combination is None:
+            continue
 
         if last_node_of_combination.value == '1':
             boolean_value = True
@@ -112,14 +115,26 @@ def check_bdd_solution(bdd: BDD, expression:str , order: str):
             return None
 
         if boolean_value != check(expression, order, combination):
+            print("Expression: %s" % expression)
+            print("Order: %s" % order)
+            print("Combination: %s" % combination)
             return boolean_c(False)
         else:
             from src.utils.colors import boolean_values_c
-            print(boolean_values_c(combination) + ": " + boolean_c(boolean_value))
+
+            if not printed_header and verbose:
+                print(order)
+                for _ in range(len(order) + 7):
+                    print('-', end='')
+                print('\n', end='')
+                printed_header = True
+
+            if verbose:
+                print(boolean_values_c(combination) + ": " + boolean_c(boolean_value))
 
     return boolean_c(True)
 
 
-def test_bdd(expression: str, order: str):
+def test_bdd(expression: str, order: str, verbose: bool = True):
     bdd = BDD().create(expression, order)
-    return check_bdd_solution(bdd, expression, order)
+    return check_bdd_solution(bdd, expression, order, verbose)
