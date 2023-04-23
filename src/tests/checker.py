@@ -1,3 +1,5 @@
+from src.bdd.BDD import BDD
+
 # Evaluates given function that had truth values of each letter inserted into it
 def evaluate_functions(functions: list):
 
@@ -75,3 +77,11 @@ def check(expression, order, combination):
 
     # We evaluate the boolean value of each function in function list
     return evaluate_functions(functions)
+
+# TODO:: Write test_bdd_solution
+def check_bdd(bdd):
+    pass
+
+
+def check_bdd_solution(bdd: BDD, expression:str , order: str):
+    return check(expression, order, None) == check_bdd(bdd)

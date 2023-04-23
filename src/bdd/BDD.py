@@ -131,7 +131,7 @@ def minimize_expression(expression):
 # Performs second reduction
 def replace_node(node, nodes_layer, parents_layer, children_layer):
     # Check prerequisites for second reduction
-    if node is None or nodes_layer is None or parents_layer is None or children_layer is None:
+    if node is None or nodes_layer is None:
         return
 
     # Firstly we remove the node from its layer
@@ -139,34 +139,42 @@ def replace_node(node, nodes_layer, parents_layer, children_layer):
 
     # Then we disconnect the node from its parent
 
-    # For each parent in parent's layer
-    for parent in parents_layer:
-        # If left child is the node we are disconnecting.
-        if parent.left == node:
-            # Replace it with '0' node on the left side
+    if parents_layer is not None:
+        # For each parent in parent's layer
+        for parent in parents_layer:
+            # If left child is the node we are disconnecting.
+            if parent.left == node:
+                # Replace it with '0' node on the left side
 
-            # TODO:: correct? (was "node_one" now it is "node_zero")
-            parent.left = BDD.get_node_zero()
+                # TODO:: correct? (was "node_one" now it is "node_zero")
+                parent.left = BDD.get_node_zero()
 
-        # If right child is the node we are disconnecting
-        elif parent.right == node:
-            # Replace it with '1' node on the right side
-            parent.right = BDD.get_node_one()
+            # If right child is the node we are disconnecting
+            elif parent.right == node:
+                # Replace it with '1' node on the right side
+                parent.right = BDD.get_node_one()
 
     # Now we remove the node's children
     children_to_remove = []
 
-    # We first go through the children
-    for child in children_layer:
-        # If the child belongs to the node
-        if child == node.left or child == node.right:
-            # Add it to removal list
-            children_to_remove.append(child)
+    if children_layer is not None:
+        # We first go through the children
+        for child in children_layer:
+            # If the child belongs to the node
+            if child == node.left or child == node.right:
+                # Add it to removal list
+                children_to_remove.append(child)
 
     # Now for each child on the removal list
     for child in children_to_remove:
         # Remove the child from children layer
         children_layer.remove(child)
+
+
+def replace_root(root):
+    if root.left == root.right:
+        return root.left
+    return None
 
 
 class BDD:
@@ -176,7 +184,6 @@ class BDD:
     def __init__(self):
         self.layers = None
         self.order = None
-        self.expression = None
 
     def initialize(self, expression: str, order: str = None):
         # Initialize layers list
@@ -220,7 +227,12 @@ class BDD:
 
                     # Second (duplicates) reduction
                     if check_second_reduction(node):
-                        replace_node(node, self.layers[-2], self.layers[-3], self.layers[-1])
+                        if self.is_root(node):
+                            new_root = node.left
+                            replace_node(node, self.layers[0], None, self.layers[-1])
+                            self.layers = [[new_root]]
+                        else:
+                            replace_node(node, self.layers[-2], self.layers[-3], self.layers[-1])
 
             # If did not create any children, remove the empty layer
             if self.layers[-1] is not None and len(self.layers[-1]) == 0:
@@ -319,6 +331,12 @@ class BDD:
     @staticmethod
     def get_node_zero():
         return BDD.node_zero
+
+    def is_root(self, node):
+        if self.layers is not None and len(self.layers) > 0:
+            return node == self.layers[0][0]
+        else:
+            return False
 
     def __str__(self):
 

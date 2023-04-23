@@ -24,30 +24,26 @@ from src.bdd.BDD import BDD
 
 
 def main():
-    #bdd = BDD("ByzxjyyURYz+ynYSrhUnNyn+BxvbxRhuSUj+rhnjbVnsXHY+xYnhuZZZbNx+zZxbSyvnvJb+uyRVszJurvz+RhJzbxuYrNV+vbUybsHzVJj+jnjBunxJXUz+sRNvHUNRbSs+xxsRXvUzSxR+rSUzBnRHNjS+yHXnBSxzUhs+zHjRbrzyZvu", "byzxjurnshv")
-    #bdd = BDD("aC+abc+Ab+Bc+bb+Bb+bB+bbb", "abc")
-    #bdd = BDD("ab+ac+bc", "abc")
+    # NODES COUNT BEFORE REDUCTION: self.nodes_before_count = 2**(len(order)+1) - 1
 
-    bdd = BDD().create_with_best_order("aC+abc+Ab+Bc").use("100")
-    #bdd.create("aC+abc+Ab+Bc", "abc")
-    print(bdd, end="")
+    #bdd = BDD().create_with_best_order("aC+abc+Ab+Bc")
+    #path = bdd.use("100")
+    #print(bdd, end="\n")
+    #print(path, end="")
+    pass
 
 
 def test():
-    from src.bdd.Node import definitive_value
-    from src.bdd.BDD import remove_duplicate_letters_from_expression
-    from src.bdd.BDD import remove_zero_nodes_from_expression
-    from src.tests.checker import check
-    # print(definitive_value("b+Bc", 'b', '1'))
-    # print(definitive_value("b+Cc", 'b', '1'))
-    # print(definitive_value("aC+abc+Ab+aBc+a", 'a', '1'))
-    # print(definitive_value("aC+abc+Ab+aBc+a", 'a', '0'))
-    # print(definitive_value("aC+abc+Ab+aBc+b", 'a', '1'))
-    # print(definitive_value("aC+abc+Ab+aBc+b", 'a', '0'))
-    # print(definitive_value("ac+ggh+abc+Ab+aBc+ba+fdjhsjkdh+fhfeh+aa+b", 'a', '1'))
-    # print(remove_zero_nodes_from_expression("aA+a+Bb+cC+Cc+ccCdDsSc"))
-    print(check("b+Bc", 'b', '00'))
+    from src.tests.generator import generate_bdd_diagrams
+    diagrams = generate_bdd_diagrams(100, 40, 200)
+
+    test_diagram = []
+    for diagram in diagrams:
+        if len(diagram.layers) > 1:
+            test_diagram.append(diagram)
+
+    pass
 
 
-#test()
-main()
+test()
+#main()

@@ -240,6 +240,8 @@ class Node:
         self.join_child(left_expression, '0', letter)
         self.join_child(right_expression, '1', letter)
 
+        # TODO:: Handle duplicate children
+
         # We look for duplicates inside the layers
         found_duplicate_l = False
         found_duplicate_r = False
