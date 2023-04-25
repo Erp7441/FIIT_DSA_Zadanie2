@@ -236,13 +236,13 @@ class Node:
         left_expression = self.shannon_decomposition(letter, '0')
         right_expression = self.shannon_decomposition(letter, '1')
 
-        # TODO:: Remove this debug if
-        if right_expression is not None and right_expression == '0':
-            pass
-
         # Connect the newly created children to their appropriate sides
         self.join_child(left_expression, '0', letter)
         self.join_child(right_expression, '1', letter)
+
+        # Check duplicates
+        if self.left == self.right:
+            self.left = self.right
 
         # We look for duplicates inside the layers
         found_duplicate_l = False
@@ -256,8 +256,8 @@ class Node:
                 self.left = child
                 # Save that we found a duplicate of left child
                 found_duplicate_l = True
-            # Else if a child with the same parameters as our right child already exists inside the layer
-            elif child == self.right:
+            # If a child with the same parameters as our right child already exists inside the layer
+            if child == self.right:
                 # We connect it as our right child
                 self.right = child
                 # Save that we found a duplicate of right child
@@ -266,7 +266,7 @@ class Node:
         # If we have not found any duplicates, and we are not '0' or '1' node then append our children to the layer
         if not found_duplicate_l and not check_for_terminator(self.left):
             layer.append(self.left)
-        if not found_duplicate_r and not check_for_terminator(self.right):
+        if not found_duplicate_r and not check_for_terminator(self.right) and self.left != self.right:
             layer.append(self.right)
 
     # Creates a child based on expression and join's it to the appropriate side
@@ -329,7 +329,7 @@ class Node:
         if other is None:
             return False
         # Else return the comparison of the equality of both their values and expressions
-        return self.value == other.value and self.expression == other.expression
+        return self.expression == other.expression
 
     # Checks if this node is not equal to '1' or '0' node
     def check_create_children(self):

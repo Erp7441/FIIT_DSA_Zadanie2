@@ -101,6 +101,7 @@ def check_bdd_solution(bdd: BDD, expression: str, order: str, verbose: bool = Tr
     printed_header = False
 
     for combination in combinations:
+
         last_node_of_combination = bdd.use(combination)
         boolean_value = None
 
@@ -115,12 +116,16 @@ def check_bdd_solution(bdd: BDD, expression: str, order: str, verbose: bool = Tr
             return None
 
         if boolean_value != check(expression, order, combination):
+            # TODO:: Remove
             print("Expression: %s" % expression)
             print("Order: %s" % order)
             print("Combination: %s" % combination)
+            print("Last Expression: %s" % last_node_of_combination.expression)
+            print("Last Order: %s" % last_node_of_combination.order)
+            print("Boolean value of last node: %s" % boolean_value)
             return boolean_c(False)
         else:
-            from src.utils.colors import boolean_values_c
+            from src.utils.colors import boolean_values_c, c
 
             if not printed_header and verbose:
                 print(order)
@@ -130,7 +135,7 @@ def check_bdd_solution(bdd: BDD, expression: str, order: str, verbose: bool = Tr
                 printed_header = True
 
             if verbose:
-                print(boolean_values_c(combination) + ": " + boolean_c(boolean_value))
+                print(boolean_values_c(combination) + ": " + boolean_c(boolean_value) + " which is " + c("correct", "green"))
 
     return boolean_c(True)
 

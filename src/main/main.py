@@ -71,7 +71,13 @@ def test():
     expression = "HADu+tfDs+lCDw+zpqn+xSNy+AyDj+wCXr+lvYc+Zvxq+pKSl+jkAf+XAqc+vlWu+raZH+NLtc+ZpnL+nzFh+lkjh+Vrjt+qfpd"
     order = "nvwlxaupjrdfhqzyktsc"
 
-    print("BDD is: " + test_bdd(expression, order))
+    #expression = "ZfyIx+bqIKq+irFbs+Kzibr+KQAFR+bAqhc+Ilzsz+xfbXK+XhlYK+rFhZb+KQzyA+lAAyl+zCSxi+Kyqzh"
+    #order = "zfyixbqkrsahcl"
+
+    #expression = "aC+abc+Ab+Bc"
+    #order = "abc"
+
+    print("BDD is: " + test_bdd(expression, order, verbose=True))
 
     #generate_and_test_diagrams(2)
     pass

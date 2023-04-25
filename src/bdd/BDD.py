@@ -128,47 +128,8 @@ def minimize_expression(expression):
     return remove_zero_nodes_from_expression(remove_duplicate_letters_from_expression(expression))
 
 
-# Performs second reduction
-def replace_node(node, nodes_layer, parents_layer, children_layer):
-    # Check prerequisites for second reduction
-    if node is None or nodes_layer is None:
-        return
-
-    # Firstly we remove the node from its layer
-    nodes_layer.remove(node)
-
-    # Then we disconnect the node from its parent
-
-    if parents_layer is not None:
-        # For each parent in parent's layer
-        for parent in parents_layer:
-            # If left child is the node we are disconnecting.
-            if parent.left == node:
-                # Replace it with '0' node on the left side
-
-                # TODO:: correct? (was "node_one" now it is "node_zero")
-                parent.left = BDD.get_node_zero()
-
-            # If right child is the node we are disconnecting
-            elif parent.right == node:
-                # Replace it with '1' node on the right side
-                parent.right = BDD.get_node_one()
-
-    # Now we remove the node's children
-    children_to_remove = []
-
-    if children_layer is not None:
-        # We first go through the children
-        for child in children_layer:
-            # If the child belongs to the node
-            if child == node.left or child == node.right:
-                # Add it to removal list
-                children_to_remove.append(child)
-
-    # Now for each child on the removal list
-    for child in children_to_remove:
-        # Remove the child from children layer
-        children_layer.remove(child)
+def check_for_terminator(node):
+    return node == BDD.get_node_one() or node == BDD.get_node_zero()
 
 
 def replace_root(root):
@@ -227,14 +188,7 @@ class BDD:
                 if node.order is not None and len(node.order) != 0:
                     node.create_children(node.order[0], self.layers[-1])
 
-                    # Second (duplicates) reduction
-                    if check_second_reduction(node):
-                        if self.is_root(node):
-                            new_root = node.left
-                            replace_node(node, self.layers[0], None, self.layers[-1])
-                            self.layers = [[new_root]]
-                        else:
-                            replace_node(node, self.layers[-2], self.layers[-3], self.layers[-1])
+            self.s_reduction()
 
             # If did not create any children, remove the empty layer
             if self.layers[-1] is not None and len(self.layers[-1]) == 0:
@@ -302,10 +256,10 @@ class BDD:
         # For each value in combination we received
         for index, value in enumerate(combination):
 
-            # U je problem, Je mozne ze to je cisto left pohyb a zrazu left pohyb
-
-            if current_node is BDD.get_node_zero() or current_node is BDD.get_node_one():
+            if check_for_terminator(current_node):
                 return current_node
+
+            # TODO:: Mne sa nerozvnie node 'hl' Sadge
 
             # If order's letter doesn't match the current node label then we skip it
             if current_node.value.upper() != self.order[index].upper():
@@ -363,3 +317,41 @@ class BDD:
 
         # Return a string representation of the binary decision diagram
         return string
+
+    def s_reduction(self):
+        reversed_layers = list(reversed(self.layers))
+        b_repeat = True
+
+        while b_repeat:
+            b_repeat = False
+            for layer in reversed_layers:
+                for node in layer:
+                    # Second (duplicates) reduction
+
+                    if check_second_reduction(node):
+                        if self.is_root(node):
+                            new_root = node.left
+                            self.second_reduction(node, self.layers[0])
+                            self.layers = [[new_root]]
+                        else:
+                            self.second_reduction(node, layer)
+                            b_repeat = True
+
+    def lookup_parent(self, node):
+        for layer in self.layers:
+            for parent in layer:
+                if parent.left == node or parent.right == node:
+                    return parent
+        return None
+
+    # Performs second reduction
+    def second_reduction(self, node, nodes_layer):
+
+        parent = self.lookup_parent(node)
+
+        if parent.left == node:
+            parent.left = node.left
+        if parent.right == node:
+            parent.right = node.right
+
+        nodes_layer.remove(node)
