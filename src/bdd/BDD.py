@@ -259,8 +259,6 @@ class BDD:
             if check_for_terminator(current_node):
                 return current_node
 
-            # TODO:: Mne sa nerozvnie node 'hl' Sadge
-
             # If order's letter doesn't match the current node label then we skip it
             if current_node.value.upper() != self.order[index].upper():
                 continue

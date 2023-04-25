@@ -1,3 +1,4 @@
+
 # Shannon's helper function that inserts a '0' or '1' value into the expression
 def shannon_insert_value(expression, value, insertion_value):
 
@@ -84,12 +85,8 @@ def evaluate_letter(letter: str, replacement: str):
         return None
 
     # If it is lowercase letter we return the replacement value
-    # TODO:: Refactor this?
     if letter.islower():
-        if replacement == '1':
-            return '1'
-        else:
-            return '0'
+        return replacement
     # Else if it is an uppercase letter we return the opposite of replacement value
     else:
         if replacement == '1':
@@ -124,7 +121,6 @@ def definitive_value(expression: str, control: str, replacement: str):
         # If the node is a single letter is not the one we are looking for
         # Example 'b'
         elif len(node) == 1:
-            # TODO:: Refactor to stop here?
             # We append it to the values without evaluation
             values.append(node)
         # If the node is longer then 1 letter and does not contain the letter we are looking for
@@ -256,12 +252,19 @@ class Node:
                 self.left = child
                 # Save that we found a duplicate of left child
                 found_duplicate_l = True
+
+                if found_duplicate_r:
+                    break
+
             # If a child with the same parameters as our right child already exists inside the layer
             if child == self.right:
                 # We connect it as our right child
                 self.right = child
                 # Save that we found a duplicate of right child
                 found_duplicate_r = True
+
+                if found_duplicate_l:
+                    break
 
         # If we have not found any duplicates, and we are not '0' or '1' node then append our children to the layer
         if not found_duplicate_l and not check_for_terminator(self.left):

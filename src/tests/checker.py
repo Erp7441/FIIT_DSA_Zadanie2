@@ -1,4 +1,7 @@
 from src.bdd.BDD import BDD
+from src.utils.colors import boolean_c, CORRECT
+from itertools import product
+from time import sleep
 
 
 # Evaluates given function that had truth values of each letter inserted into it
@@ -17,7 +20,7 @@ def evaluate_functions(functions: list):
             # If the evaluated letter is '0'
             if letter == '0':
                 is_true = False
-                # TODO:: shouldn't we break here?
+                break
 
         if is_true:
             # If we have not found any '0' value return True
@@ -31,115 +34,110 @@ def evaluate_functions(functions: list):
 
 
 # Check the expression boolean value according to the combination of '0' and '1'
-def check(expression, order, combination):
-    functions = []
+def get_letter_value(letter: str, value: str):
+    # If the character is upper case
+    if letter.isupper():
+        # We return the opposite value
+        if value == '0':
+            return '1'
+        else:
+            return '0'
 
-    # Split the DNF expression into nodes
-    nodes = expression.split('+')
+    # Else we just return
+    return value
+
+
+# Evaluates total node boolean value
+def get_node_value(node: str, combination: str, order: str):
+
+    # For each letter in order
+    for order_index, order_letter in enumerate(order):
+        # For each letter in node
+        for node_letter in node:
+            # If the character matches the letter in order
+            if node_letter.lower() == order_letter:
+                if get_letter_value(node_letter, combination[order_index]) == '0':
+                    return False
+    return True
+
+
+def check(expression: str, order: str, combination: str):
 
     # For each node in the list of nodes
-    for node in nodes:
-
-        # Create a list of new nodes
-        new_nodes = []
-
-        # For each letter in order
-        for index_o, order_enum in enumerate(order):
-
-            # For each character in node
-            for index_ch, character in enumerate(node):
-
-                # If the character matches the letter in order
-                # TODO:: Change "order[index_o]" to "order[index_o].lower() ?"
-                if character.lower() == order[index_o]:
-
-                    # If the character is upper case
-                    if character.isupper():
-                        # And the combination value is '0'
-                        if combination[index_o] == '0':
-                            # We append '1' to the new_nodes list
-                            new_nodes.append("1")
-                        else:
-                            # Else we append '0' to the new_nodes list
-                            new_nodes.append("0")
-                    # Else the character is lowercase
-                    # TODO:: Refactor to always just append "combination[index_o] to the new_nodes list
-                    else:
-                        # If the combination value is '0'
-                        if combination[index_o] == '0':
-                            # Append '0 to the new_nodes list
-                            new_nodes.append("0")
-                        else:
-                            # Else we append '1' to the new_nodes list
-                            new_nodes.append("1")
-        # Finally we append the new_nodes list to the list to the list of functions
-        functions.append(new_nodes)
+    for node in expression.split('+'):
+        if get_node_value(node, combination, order):
+            return True
 
     # We evaluate the boolean value of each function in function list
-    return evaluate_functions(functions)
+    return False
 
 
-def get_combinations(characters: str, amount: int):
-    from itertools import product
-    from src.utils.converter import tuple_to_string
-    combinations = []
-    for combination in list(product(characters, repeat=amount)):
-        combinations.append(tuple_to_string(combination))
-    return combinations
+def get_diagram_value(bdd, combination):
+    last_node_of_combination = bdd.use(combination)
+
+    if last_node_of_combination is None:
+        return None
+
+    if last_node_of_combination.value == '1':
+        return True
+    elif last_node_of_combination.value == '0':
+        return False
+
+    return None
 
 
-def check_bdd_solution(bdd: BDD, expression: str, order: str, verbose: bool = True):
-    from src.utils.colors import boolean_c
+def print_combination(combination, expression_value: bool, header_tracker: bool = False, order: str = ""):
+    if header_tracker:
+        print(order)
+        for _ in range(len(order) + 7):
+            print('-', end='')
+        print('\n', end='')
 
+    print((''.join(combination)) + ": " + boolean_c(expression_value) + " which is " + CORRECT)
+
+
+def check_bdd_solution(bdd: BDD, expression: str, order: str, verbose_all: bool = False,
+                       verbose_bad: bool = True, verbose_good: bool = False, slow_time: float = None):
     # Iter tools product on 01010010101010
     # 1. Generate all possible combinations of 0's and 1's
     # 2. Check the value of "use()" method in BDD
     # 3. Check the value of expression using "check()" function
     # 4. If all possible combinations are equal then we have correct BDD solution
 
-    combinations = get_combinations('01', len(order))
     printed_header = False
+    slow = False
+    order = order.lower()
 
-    for combination in combinations:
+    if slow_time is not None:
+        slow = True
 
-        last_node_of_combination = bdd.use(combination)
-        boolean_value = None
+    for combination in product('01', repeat=len(order)):
 
-        if last_node_of_combination is None:
-            continue
+        boolean_value = get_diagram_value(bdd, combination)
+        expression_value = check(expression, order, combination)
 
-        if last_node_of_combination.value == '1':
-            boolean_value = True
-        elif last_node_of_combination.value == '0':
-            boolean_value = False
-        else:
-            return None
+        if boolean_value != expression_value:
+            if verbose_all or verbose_bad:
+                if slow:
+                    sleep(slow_time)
+                print("Combination: %s" % ''.join(combination))
+                print("Value of BDD: %s" % boolean_value)
+                print("Value of expression: %s" % expression_value)
 
-        if boolean_value != check(expression, order, combination):
-            # TODO:: Remove
-            print("Expression: %s" % expression)
-            print("Order: %s" % order)
-            print("Combination: %s" % combination)
-            print("Last Expression: %s" % last_node_of_combination.expression)
-            print("Last Order: %s" % last_node_of_combination.order)
-            print("Boolean value of last node: %s" % boolean_value)
             return boolean_c(False)
-        else:
-            from src.utils.colors import boolean_values_c, c
-
-            if not printed_header and verbose:
-                print(order)
-                for _ in range(len(order) + 7):
-                    print('-', end='')
-                print('\n', end='')
+        elif verbose_all or verbose_good:
+            if slow:
+                sleep(slow_time)
+            if not printed_header:
+                print_combination(combination, boolean_value, printed_header, order)
                 printed_header = True
-
-            if verbose:
-                print(boolean_values_c(combination) + ": " + boolean_c(boolean_value) + " which is " + c("correct", "green"))
+            else:
+                print_combination(combination, boolean_value)
 
     return boolean_c(True)
 
 
-def test_bdd(expression: str, order: str, verbose: bool = True):
+def test_bdd(expression: str, order: str, verbose_all: bool = False, verbose_bad: bool = True,
+             verbose_good: bool = False, slow_time = None):
     bdd = BDD().create(expression, order)
-    return check_bdd_solution(bdd, expression, order, verbose)
+    return check_bdd_solution(bdd, expression, order, verbose_all, verbose_bad, verbose_good, slow_time)

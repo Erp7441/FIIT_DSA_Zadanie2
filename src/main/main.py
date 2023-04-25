@@ -41,7 +41,13 @@ def main():
     #bdd = BDD().create_with_best_order("aC+abc+Ab+Bc")
     #path = bdd.use("100")
     #print(bdd, end="\n")
-    #print(path, end="")
+    #print(path, end=
+
+    expression = "HADu+tfDs+lCDw+zpqn+xSNy+AyDj+wCXr+lvYc+Zvxq+pKSl+jkAf+XAqc+vlWu+raZH+NLtc+ZpnL+nzFh+lkjh+Vrjt+qfpd"
+    order = "nvwlxaupjrdfhqzyktsc"
+
+    bdd = BDD().create(expression, order)
+
     pass
 
 
@@ -68,8 +74,8 @@ def test():
     #expression = "ABCDEFGHIJKLMNOPQRS"
     #order = "abcdefghijklmnopqrs"
 
-    expression = "HADu+tfDs+lCDw+zpqn+xSNy+AyDj+wCXr+lvYc+Zvxq+pKSl+jkAf+XAqc+vlWu+raZH+NLtc+ZpnL+nzFh+lkjh+Vrjt+qfpd"
-    order = "nvwlxaupjrdfhqzyktsc"
+    #expression = "HADu+tfDs+lCDw+zpqn+xSNy+AyDj+wCXr+lvYc+Zvxq+pKSl+jkAf+XAqc+vlWu+raZH+NLtc+ZpnL+nzFh+lkjh+Vrjt+qfpd"
+    #order = "nvwlxaupjrdfhqzyktsc"
 
     #expression = "ZfyIx+bqIKq+irFbs+Kzibr+KQAFR+bAqhc+Ilzsz+xfbXK+XhlYK+rFhZb+KQzyA+lAAyl+zCSxi+Kyqzh"
     #order = "zfyixbqkrsahcl"
@@ -77,7 +83,14 @@ def test():
     #expression = "aC+abc+Ab+Bc"
     #order = "abc"
 
-    print("BDD is: " + test_bdd(expression, order, verbose=True))
+    expression = "PEthGeelNIdtnD+otlHUiHloMpihx+EbNluACDGwBdNn+hXjddDmMWntWbH+UaaDnJhndEXGFc+XjEJrIMiCLWNam+IDRLxwdRwdOPpx+LEDWjcffaHgNpL+LNNotlwgxbowxh+mThwXXlejnwdim+MFrfewoWACHfNJ+bbGmNDmmwubIiE+lcrjjlxhUaEuhR+mDJmiemwJtnOXo+RHcNjUeDpIpXoT+EWRcciXwxThRXX+aOCoNMxxTlAiPt+IdopemdWwhwnoG+BoLepfjXjLlggP+rRepejxuLuJUHF+FJrtutmUMrouwm+pgrgRDTpuFjpDe+wWWhbnfWFejeec+lgfCjibjdPIJRL+OLiOJiOLcWdcTw+RxAwbuMbDiBoFR+plueXIHjXfxAhD+MgdrHtxRfEiGPu+ofxUgUWuGRnAwF"
+    order = "pethglnidoumxbacwjfr"
+
+    from time import time
+    start = time()
+    print("BDD is: " + test_bdd(expression, order, verbose_all=False))
+    end = time() - start
+    print("BDD time: " + str(end))
 
     #generate_and_test_diagrams(2)
     pass
