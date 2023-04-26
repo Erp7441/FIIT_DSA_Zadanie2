@@ -177,13 +177,15 @@ def check_for_terminator(node):
 
 class Node:
     def __init__(self, expression: str, order: str):
-        self.order = order
+        self.order = ""
         self.left = None
         self.right = None
         self.expression = expression
         self.value = None
-        if order is not None and len(order) != 0:
-            self.value = order[0].upper()
+
+        if order is not None and type(order) == str and len(order) != 0:
+            self.order = order.lower()
+            self.value = order[0].lower()
 
     # Decomposes the expression according to the Shannon's rules of decomposition
     def shannon_decomposition(self, letter: str, replacement: str):

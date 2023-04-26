@@ -4,35 +4,6 @@ from itertools import product
 from time import sleep
 
 
-# Evaluates given function that had truth values of each letter inserted into it
-def evaluate_functions(functions: list):
-    # Check if we have a list of functions
-    if list is None or len(functions) == 0:
-        return False
-
-    # Holds the boolean value we have found
-    is_true = True
-
-    # For each function in the list
-    for function in functions:
-        # For each letter in the function
-        for letter in function:
-            # If the evaluated letter is '0'
-            if letter == '0':
-                is_true = False
-                break
-
-        if is_true:
-            # If we have not found any '0' value return True
-            return True
-        else:
-            # Else reset boolean value we have found and continue on the next function in the list
-            is_true = True
-
-    # If we haven't found any '1' value's in functions return False
-    return False
-
-
 # Check the expression boolean value according to the combination of '0' and '1'
 def get_letter_value(letter: str, value: str):
     # If the character is upper case
@@ -65,10 +36,11 @@ def check(expression: str, order: str, combination: str):
 
     # For each node in the list of nodes
     for node in expression.split('+'):
+        # If the node value is True then return True
         if get_node_value(node, combination, order):
             return True
 
-    # We evaluate the boolean value of each function in function list
+    # All nodes are False. Return False.
     return False
 
 
@@ -86,7 +58,9 @@ def get_diagram_value(bdd, combination):
     return None
 
 
-def print_combination(combination, expression_value: bool, header_tracker: bool = False, order: str = ""):
+def print_combination(combination, expression_value: bool, header_tracker: bool = False, order: str = "", slow_output: bool = False, slow_time: float = 0.0):
+    if slow_output:
+        sleep(slow_time)
     if header_tracker:
         print(order)
         for _ in range(len(order) + 7):
@@ -94,6 +68,14 @@ def print_combination(combination, expression_value: bool, header_tracker: bool 
         print('\n', end='')
 
     print((''.join(combination)) + ": " + boolean_c(expression_value) + " which is " + CORRECT)
+
+
+def print_bad_combination(combination: str, bdd_value: bool, expression_value: bool, slow_output: bool = False, slow_time: float = 0.0):
+        if slow_output:
+            sleep(slow_time)
+        print("Combination: %s" % ''.join(combination))
+        print("Value of BDD: %s" % bdd_value)
+        print("Value of expression: %s" % expression_value)
 
 
 def check_bdd_solution(bdd: BDD, expression: str, order: str, verbose_all: bool = False,
@@ -105,34 +87,26 @@ def check_bdd_solution(bdd: BDD, expression: str, order: str, verbose_all: bool 
     # 4. If all possible combinations are equal then we have correct BDD solution
 
     printed_header = False
-    slow = False
+    slow_output = False
     order = order.lower()
 
     if slow_time is not None:
-        slow = True
+        slow_output = True
 
     for combination in product('01', repeat=len(order)):
 
-        boolean_value = get_diagram_value(bdd, combination)
         expression_value = check(expression, order, combination)
+        bdd_value = get_diagram_value(bdd, combination)
 
-        if boolean_value != expression_value:
-            if verbose_all or verbose_bad:
-                if slow:
-                    sleep(slow_time)
-                print("Combination: %s" % ''.join(combination))
-                print("Value of BDD: %s" % boolean_value)
-                print("Value of expression: %s" % expression_value)
-
+        if bdd_value != expression_value:
+            print_bad_combination(combination, bdd_value, expression_value, slow_output, slow_time)
             return boolean_c(False)
         elif verbose_all or verbose_good:
-            if slow:
-                sleep(slow_time)
             if not printed_header:
-                print_combination(combination, boolean_value, printed_header, order)
+                print_combination(combination, bdd_value, printed_header, order, slow_output, slow_time)
                 printed_header = True
             else:
-                print_combination(combination, boolean_value)
+                print_combination(combination, bdd_value, slow_output=slow_output, slow_time=slow_time)
 
     return boolean_c(True)
 

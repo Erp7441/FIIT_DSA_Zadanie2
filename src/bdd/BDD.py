@@ -154,7 +154,7 @@ class BDD:
 
         # If order is not None we can set it as order of root node in this BDD
         if order is not None:
-            self.order = order
+            self.order = order.lower()
 
         # If we have no expression connect  root to '0'
         if expression is None or len(expression) == 0:
@@ -260,7 +260,7 @@ class BDD:
                 return current_node
 
             # If order's letter doesn't match the current node label then we skip it
-            if current_node.value.upper() != self.order[index].upper():
+            if current_node.value != self.order[index]:
                 continue
 
             # If we got a '0' value we move left

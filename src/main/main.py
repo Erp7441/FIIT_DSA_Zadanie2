@@ -88,11 +88,13 @@ def test():
 
     from time import time
     start = time()
-    print("BDD is: " + test_bdd(expression, order, verbose_all=False))
+    result = test_bdd(expression, order, verbose_all=False)
     end = time() - start
+    
+    print("BDD is: " + result)
     print("BDD time: " + str(end))
 
-    #generate_and_test_diagrams(2)
+    #generate_and_test_diagrams()
     pass
 
 
