@@ -2,12 +2,11 @@ from src.bdd.BDD import BDD
 from src.utils.colors import boolean_c, CORRECT
 from itertools import product
 from time import sleep
-from datetime import datetime
+from timeit import default_timer
 
 
 def time_ms():
-    dt = datetime.now()
-    return dt.microsecond / 1000
+    return default_timer() * 1000
 
 
 # Check the expression boolean value according to the combination of '0' and '1'
@@ -147,7 +146,6 @@ def calculate_reduction(bdd: BDD):
     count_after_reduction = bdd.get_node_count()
     return (1 - (count_after_reduction / count_before_reduction)) * 100, count_before_reduction, count_after_reduction
 
-
 def test_bdd_actual_vs_best_order(bdd_actual: BDD, expression: str, best_order_combination_count: int = None):
     bdd_best = BDD()
 
@@ -165,11 +163,21 @@ def test_bdd_actual_vs_best_order(bdd_actual: BDD, expression: str, best_order_c
     if best_node_count < actual_node_count:
         diff = actual_node_count - best_node_count
 
-        print("BDD with best order: has " + str(diff) + " less ", end="")
+        print("BDD with best order has " + str(diff) + " less ", end="")
         if diff == 1:
             print("node")
         else:
             print("nodes")
+
+    # Reduction percentage
+    actual_reduction_pe = calculate_reduction(bdd_actual)[0]
+    print("BDD with actual order reduction percentage: " + str(round(actual_reduction_pe, 13)) + " %")
+    best_reduction_pe = calculate_reduction(bdd_best)[0]
+    print("BDD with best order reduction percentage: " + str(round(best_reduction_pe, 13)) + " %")
+
+    if best_reduction_pe > actual_reduction_pe:
+        print("BDD with best order is " + str(round(best_reduction_pe - actual_reduction_pe, 13)) + " % more reduced")
+
 
 def generate_and_run_tests(
         diagram_count: int = 100,

@@ -23,7 +23,7 @@ from src.bdd.BDD import BDD
 # Priklad mas jedno pismeno napriklad X. Len ho dosadis
 
 # TODO 's:
-    # 1. Function that finds interesting details about the expression
+    # 1. Create menu
 
 # Test expressions:
     # 1.

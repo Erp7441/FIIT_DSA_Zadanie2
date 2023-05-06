@@ -174,12 +174,16 @@ class BDD:
     node_zero.value = '0'
 
     def __init__(self):
+        self.count = None
         self.layers = None
         self.order = None
+        self.variable_count = None
 
     def initialize(self, expression: str, order: str = None):
         # Initialize layers list
         self.layers = []
+        self.count = 0
+        self.variable_count = 0
 
         # If order is not None we can set it as order of root node in this BDD
         if order is not None:
@@ -223,14 +227,19 @@ class BDD:
             if self.layers[-1] is not None and len(self.layers[-1]) == 0:
                 self.layers.remove(self.layers[-1])
 
+        # Counts nodes of the reduced expression represented by the BDD
+        self.get_node_count()
+        self.get_variable_count()
         return self
-
 
     # BDD_create_with_best_order
     def create_with_best_order(self, expression: str, max_combinations: int = None):
 
         # Get string containing all letters in the expression
         alphabet = "".join(get_expression_alphabet(expression))
+
+        if max_combinations is None or max_combinations <= 0:
+            max_combinations = len(alphabet)
 
         # Get combinations of all letters in the expression
         combinations = get_combinations(alphabet, max_combinations)
@@ -260,13 +269,17 @@ class BDD:
     # Gets count of nodes in layers
     def get_node_count(self):
         # Holds count of nodes in layers
-        count = 0
+        self.count = 0
         # For each layer
         for layer in self.layers:
             # Add its length to the counter
-            count += len(layer)
+            self.count += len(layer)
         # Return the count
-        return count
+        return self.count
+
+    def get_variable_count(self):
+        self.variable_count = len(get_expression_alphabet(self.layers[0][0].expression))
+        return self.variable_count
 
     # BDD_use
     def use(self, combination: str):
