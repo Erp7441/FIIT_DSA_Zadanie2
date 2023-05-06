@@ -1,7 +1,7 @@
 import random
 import string
-from src.bdd.BDD import BDD
-
+from random import randint
+from src.bdd.BDD import BDD, get_combinations, get_expression_alphabet
 
 def generate_dnf_expression(variable_count, node_count):
 
@@ -30,9 +30,31 @@ def generate_dnf_expressions(expression_count, variable_count, node_count):
     return expressions
 
 
-def generate_bdd_diagrams(diagram_count: int = 100, variable_count: int = 13, node_count: int = 200):
+# TODO:: Remove this memory consuming function?
+def generate_bdd_diagrams(diagram_count: int = 100, variable_count: int = 13, node_count: int = 7):
     expressions = generate_dnf_expressions(diagram_count, variable_count, node_count)
     diagrams = []
     for i in range(diagram_count):
         diagrams.append(BDD().create_with_best_order(expressions[i]))
     return diagrams
+
+
+def generate_expression_and_order(
+        diagram_count: int = 100,
+        variable_count: int = 13,
+        node_count: int = 7,
+        max_combinations: int = 5
+):
+    expressions = generate_dnf_expressions(diagram_count, variable_count, node_count)
+    expressions_orders = []
+
+    for expression in expressions:
+
+        # Get string containing all letters in the expression
+        alphabet = "".join(get_expression_alphabet(expression))
+
+        # Get combinations of all letters in the expression
+        combinations = get_combinations(alphabet, max_combinations)
+        expressions_orders.append((expression, combinations[randint(0, max_combinations-1)]))
+
+    return expressions_orders

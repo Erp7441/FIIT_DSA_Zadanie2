@@ -23,9 +23,7 @@ from src.bdd.BDD import BDD
 # Priklad mas jedno pismeno napriklad X. Len ho dosadis
 
 # TODO 's:
-    # 1. How long everything took
-    # 2. Comparison between BDD_Create and BDD_Create_with_best_order
-    # 3. Random generate and test functions (minimum test 100 with 13 literals)
+    # 1. Function that finds interesting details about the expression
 
 # Test expressions:
     # 1.
@@ -35,38 +33,6 @@ from src.bdd.BDD import BDD
     # 2.
         # Expression: HADu+tfDs+lCDw+zpqn+xSNy+AyDj+wCXr+lvYc+Zvxq+pKSl+jkAf+XAqc+vlWu+raZH+NLtc+ZpnL+nzFh+lkjh+Vrjt+qfpd
         # Order: nvwlxaupjrdfhqzyktsc
-def main():
-    # NODES COUNT BEFORE REDUCTION: self.nodes_before_count = 2**(len(order)+1) - 1
-
-    #bdd = BDD().create_with_best_order("aC+abc+Ab+Bc")
-    #path = bdd.use("100")
-    #print(bdd, end="\n")
-    #print(path, end=
-
-    expression = "HADu+tfDs+lCDw+zpqn+xSNy+AyDj+wCXr+lvYc+Zvxq+pKSl+jkAf+XAqc+vlWu+raZH+NLtc+ZpnL+nzFh+lkjh+Vrjt+qfpd"
-    order = "nvwlxaupjrdfhqzyktsc"
-
-    bdd = BDD().create(expression, order)
-
-    pass
-
-
-def generate_and_test_diagrams(diagram_count: int = 100, variable_count: int = 13, node_count: int = 200):
-    from src.tests.checker import check_bdd_solution
-    from src.tests.generator import generate_bdd_diagrams
-
-    diagrams = generate_bdd_diagrams(diagram_count, variable_count, node_count)
-
-    for diagram in diagrams:
-        expression = diagram.layers[0][0].expression
-        order = diagram.layers[0][0].order
-
-        print("BDD is: " + check_bdd_solution(diagram, expression, order))
-        print("-----------------------------------------------------------")
-
-
-def test():
-    from src.tests.checker import test_bdd
 
     #expression = "wxLwokUd+wXywolNkVdUd+XwOVD+wXYlwolkVdu+WXylnkvdU+wxylwolNkvUd+WxylONVd+wxywolNkVdud+WxyOlNkdud+wxYLwLNkVdu+wloNkVd+wxYlwolKDUD+wxyolnkvuD+wYwlnKVud+xyWolNKVud+xywoLNku+WxloNkd+wxlnkVdud+wxylwolNKVd+wyLwONkdUd+xylwonkd+WxyWOlvd+wXLoLvUd+xYlolnVdu+wxywOLnkdu+WlWOlnKdud+WxlWolvud+wXYwlNKvd+Ylwolnkvud+ylolNkdu+wxlwOlnKVDUD+xyOlNkvdu+WYlnKVdud+ylwolnd+wxlwlnkVDu+wlwlnKvdud+WYoLnKvDuD+wyLwoKvd+XylwolNvdUd+WYLWnvdud+WxlOlNkvud+wxlwolnvud+WNvDu+WxYLnKUd+wylwonku+wyoLNd+xlKUd+WlWlNkvd+wxyokvdud+wxylolNkVd+wolnkdu+wxylwOnkVdu+wLNKvDu+xYLonkDuD+ylwOlnKv+WxylnKVuD+XyOlNKvDuD+wXwOlnkvdu+WXWolkDu+wxYlwoNkVdUd+wXLnd+xylwnKvdud+XYlwoNvdu+wxYlwolvd+WXYLWnkvd+WxyoLNKDU+Xolnkvd+xYwOLkD+wXwolkvd+wXylOlndud+WnVd+wYwolNVdud+xYlolnkv+wYlwonVDUD+wXyLkVUD+wxYlwlnKud+wylwolnkvDu+Wxylnkdu+wylwnkVdud+YWolnKvdUd+XYLwnKVdud+wxlwonvDuD+wxYlolnvd+wxYwoLnkdUd+xwOlnKdud+wxlwnkvdu+XLwLNkvDu"
     #order = "lnkvdwouxy"
@@ -83,19 +49,28 @@ def test():
     #expression = "aC+abc+Ab+Bc"
     #order = "abc"
 
-    expression = "PEthGeelNIdtnD+otlHUiHloMpihx+EbNluACDGwBdNn+hXjddDmMWntWbH+UaaDnJhndEXGFc+XjEJrIMiCLWNam+IDRLxwdRwdOPpx+LEDWjcffaHgNpL+LNNotlwgxbowxh+mThwXXlejnwdim+MFrfewoWACHfNJ+bbGmNDmmwubIiE+lcrjjlxhUaEuhR+mDJmiemwJtnOXo+RHcNjUeDpIpXoT+EWRcciXwxThRXX+aOCoNMxxTlAiPt+IdopemdWwhwnoG+BoLepfjXjLlggP+rRepejxuLuJUHF+FJrtutmUMrouwm+pgrgRDTpuFjpDe+wWWhbnfWFejeec+lgfCjibjdPIJRL+OLiOJiOLcWdcTw+RxAwbuMbDiBoFR+plueXIHjXfxAhD+MgdrHtxRfEiGPu+ofxUgUWuGRnAwF"
-    order = "pethglnidoumxbacwjfr"
+    # expression = "PEthGeelNIdtnD+otlHUiHloMpihx+EbNluACDGwBdNn+hXjddDmMWntWbH+UaaDnJhndEXGFc+XjEJrIMiCLWNam+IDRLxwdRwdOPpx+LEDWjcffaHgNpL+LNNotlwgxbowxh+mThwXXlejnwdim+MFrfewoWACHfNJ+bbGmNDmmwubIiE+lcrjjlxhUaEuhR+mDJmiemwJtnOXo+RHcNjUeDpIpXoT+EWRcciXwxThRXX+aOCoNMxxTlAiPt+IdopemdWwhwnoG+BoLepfjXjLlggP+rRepejxuLuJUHF+FJrtutmUMrouwm+pgrgRDTpuFjpDe+wWWhbnfWFejeec+lgfCjibjdPIJRL+OLiOJiOLcWdcTw+RxAwbuMbDiBoFR+plueXIHjXfxAhD+MgdrHtxRfEiGPu+ofxUgUWuGRnAwF"
+    # order = "pethglnidoumxbacwjfr"
 
-    from time import time
-    start = time()
-    result = test_bdd(expression, order, verbose_all=False)
-    end = time() - start
-    
-    print("BDD is: " + result)
-    print("BDD time: " + str(end))
+def main():
+    # NODES COUNT BEFORE REDUCTION: self.nodes_before_count = 2**(len(order)+1) - 1
 
-    #generate_and_test_diagrams()
+    #bdd = BDD().create_with_best_order("aC+abc+Ab+Bc")
+    #path = bdd.use("100")
+    #print(bdd, end="\n")
+    #print(path, end=
+
+    expression = "HADu+tfDs+lCDw+zpqn+xSNy+AyDj+wCXr+lvYc+Zvxq+pKSl+jkAf+XAqc+vlWu+raZH+NLtc+ZpnL+nzFh+lkjh+Vrjt+qfpd"
+    order = "nvwlxaupjrdfhqzyktsc"
+
+    bdd = BDD().create(expression, order)
+
     pass
+
+
+def test():
+    from src.tests.checker import generate_and_run_tests
+    generate_and_run_tests()
 
 
 

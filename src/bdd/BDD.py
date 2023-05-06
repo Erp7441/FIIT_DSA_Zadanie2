@@ -132,10 +132,39 @@ def check_for_terminator(node):
     return node == BDD.get_node_one() or node == BDD.get_node_zero()
 
 
+# Generates all combinations of order
+def get_combinations(s, count: int = None):
+    from itertools import permutations
+    perms = permutations(s)
+    combinations = []
+    for p in perms:
+        if set(p) == set(s):
+            combinations.append(''.join(p))
+            if count is not None and len(combinations) == count:
+                break
+    return combinations
+
+
 def replace_root(root):
     if root.left == root.right:
         return root.left
     return None
+
+
+def get_expression_alphabet(expression: str):
+    # Holds all letters present in expression
+    alphabet = []
+
+    # For each letter in the expression
+    for letter in expression:
+        if letter == '+':
+            continue
+        # If the letter is not present in the alphabet
+        if letter.lower() not in alphabet:
+            # We add it (once due to the condition above)
+            alphabet.append(letter.lower())
+
+    return alphabet
 
 
 class BDD:
@@ -196,32 +225,26 @@ class BDD:
 
         return self
 
+
     # BDD_create_with_best_order
-    def create_with_best_order(self, expression: str):
+    def create_with_best_order(self, expression: str, max_combinations: int = None):
 
-        # Holds all letters present in expression
-        alphabet = []
+        # Get string containing all letters in the expression
+        alphabet = "".join(get_expression_alphabet(expression))
 
-        # For each letter in the expression
-        for letter in expression:
-            if letter == '+':
-                continue
-            # If the letter is not present in the alphabet
-            if letter.lower() not in alphabet:
-                # We add it (once due to the condition above)
-                alphabet.append(letter.lower())
+        # Get combinations of all letters in the expression
+        combinations = get_combinations(alphabet, max_combinations)
 
-        # Join together list of alphabet characters in expression
-        order = "".join(alphabet)
+        # Holds the best order of reduction
         best_order = ""
 
         # Holds smallest number of nodes
         smallest_count = float('inf')
 
         # For each letter of the expression's alphabet
-        for _ in range(len(alphabet)):
+        for combination in combinations:
             # Create a new BDD
-            self.create(expression, order)
+            self.create(expression, combination)
             # Track current count of nodes
             current_count = self.get_node_count()
             # If the current count is smaller than the smallest tracked count
@@ -229,10 +252,7 @@ class BDD:
                 # Set current count as the smallest tracked count
                 smallest_count = current_count
                 # Save current order as the best one possible
-                best_order = order
-
-            # Shift current order
-            order = order[-1] + order[:-1]
+                best_order = combination
 
         # Return BDD with the best order
         return self.create(expression, best_order)
@@ -347,9 +367,9 @@ class BDD:
 
         parent = self.lookup_parent(node)
 
-        if parent.left == node:
+        if parent is not None and parent.left == node:
             parent.left = node.left
-        if parent.right == node:
+        if parent is not None and parent.right == node:
             parent.right = node.right
 
         nodes_layer.remove(node)
