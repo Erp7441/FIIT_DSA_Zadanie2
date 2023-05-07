@@ -3,6 +3,7 @@ from src.utils.colors import boolean_c, CORRECT
 from itertools import product
 from time import sleep
 from timeit import default_timer
+from src.utils.constants import get_c_diagram_count, get_c_variable_count, get_c_node_count
 
 
 def time_ms():
@@ -128,7 +129,7 @@ def check_bdd_solution(
         bdd_value = get_diagram_value(bdd, combination)
 
         if bdd_value != expression_value:
-            if verbose_bad:
+            if verbose_all or verbose_bad:
                 print_bad_combination(combination, bdd_value, expression_value, slow_output, slow_time)
             return boolean_c(False)
         elif verbose_all or verbose_good:
@@ -146,13 +147,11 @@ def calculate_reduction(bdd: BDD):
     count_after_reduction = bdd.get_node_count()
     return (1 - (count_after_reduction / count_before_reduction)) * 100, count_before_reduction, count_after_reduction
 
+
 def test_bdd_actual_vs_best_order(bdd_actual: BDD, expression: str, best_order_combination_count: int = None):
     bdd_best = BDD()
 
-    if best_order_combination_count is None:
-        bdd_best.create_with_best_order(expression)
-    else:
-        bdd_best.create_with_best_order(expression, best_order_combination_count)
+    bdd_best.create_with_best_order(expression, best_order_combination_count)
 
     actual_node_count = bdd_actual.get_node_count()
     best_node_count = bdd_best.get_node_count()
@@ -180,10 +179,10 @@ def test_bdd_actual_vs_best_order(bdd_actual: BDD, expression: str, best_order_c
 
 
 def generate_and_run_tests(
-        diagram_count: int = 100,
-        variable_count: int = 13,
-        node_count: int = 7,
-        best_order_combination_count: int = 5
+        diagram_count: int = get_c_diagram_count(),
+        variable_count: int = get_c_variable_count(),
+        node_count: int = get_c_node_count(),
+        best_order_combination_count: int = None,
 ):
     from src.tests.generator import generate_expression_and_order
 
@@ -193,9 +192,9 @@ def generate_and_run_tests(
 
 
 def generate_and_test_diagrams_correctness(
-        diagram_count: int = 100,
-        variable_count: int = 13,
-        node_count: int = 7,
+        diagram_count: int = get_c_diagram_count(),
+        variable_count: int = get_c_variable_count(),
+        node_count: int = get_c_node_count(),
 ):
     from src.tests.generator import generate_bdd_diagrams
 
