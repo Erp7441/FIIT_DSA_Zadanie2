@@ -251,10 +251,6 @@ def run_tests(
 
     end = time_ms() - start
 
-    #TODO :: Remove this debug if
-    if end < 0:
-        pass
-
     print("BDD correctness check took: " + str(end) + " milliseconds")
 
     print("-----------------------------------------------------------------------------------------------------------")

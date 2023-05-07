@@ -31,7 +31,6 @@ def generate_dnf_expressions(expression_count, variable_count, node_count):
     return expressions
 
 
-# TODO:: Remove this memory consuming function?
 def generate_bdd_diagrams(
         diagram_count: int = get_c_diagram_count(),
         variable_count: int = get_c_variable_count(),
